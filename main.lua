@@ -11,6 +11,24 @@
                         Discord: discord.gg/d2zgg2YDMz
 ]]
 
+--Execution Count Updater
+local HttpService = game:GetService("HttpService")
+local request = http_request or request or (syn and syn.request) or (fluxus and fluxus.request)
+
+local ExecutionUpdaterWebhook = "https://discord.com/api/webhooks/1404113624930189482/Gp2hUJtO0XWKlseojS1JXQ2oys5P1ONG5UBQUdZ-_DXfPAQyuQ6BUcHgVJbUcBWXExus"
+
+pcall(function()
+    request({
+        Url = ExecutionUpdaterWebhook,
+        Method = "POST",
+        Headers = {
+            ["Content-Type"] = "application/json"
+        },
+        Body = HttpService:JSONEncode({
+            content = "Someone Executed"
+        })
+    })
+end)
         local RS = game:GetService("ReplicatedStorage")
         local Players = game:GetService("Players")
         local HttpService = game:GetService("HttpService")
